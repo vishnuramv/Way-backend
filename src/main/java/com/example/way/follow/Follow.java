@@ -11,12 +11,10 @@ public class Follow {
     @CreatedDate
     private LocalDate createdDate;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "first_user_id", referencedColumnName = "id")
+    @ManyToMany(cascade = CascadeType.REMOVE)
     User firstUser;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "second_user_id", referencedColumnName = "id")
+    @ManyToMany(cascade = CascadeType.REMOVE)
     User secondUser;
 
     public Follow(Long id, User firstUser, User secondUser) {
@@ -28,6 +26,10 @@ public class Follow {
     public Follow(User firstUser, User secondUser) {
         this.firstUser = firstUser;
         this.secondUser = secondUser;
+    }
+
+    public Follow() {
+
     }
 
     public Long getId() {
