@@ -1,33 +1,77 @@
 package com.example.way.user;
 
 
+import com.example.way.follow.Follow;
+import com.example.way.post.Post;
+import com.example.way.savedPost.SavedPost;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.Period;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
-@Table
+@Table(name = "profile")
 public class User {
-    private @Id @GeneratedValue Long id;
-    private String name;
-    private LocalDate dob;
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(
+            name = "uuid",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", nullable = false, updatable = false)
+    private String id;
+
+    @Column(name = "email", unique = true)
     private String email;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "dob", nullable = true)
+    private LocalDate dob;
+
+    @Column(name = "password")
+    private String password;
+    @Column(name = "followers", nullable = true)
     private int followers;
+    @Column(name = "following", nullable = true)
     private int following;
 
-    public User(long id, String name, LocalDate dob, String email, int followers, int following) {
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "secondUser")
+    @JsonIgnore
+    private List<Follow> followedUsers;
+
+    @OneToMany(mappedBy = "firstUser")
+    @JsonIgnore
+    private List<Follow> followingUsers;
+
+    @OneToMany(mappedBy = "savedPost")
+    @JsonIgnore
+    private List<SavedPost> savedPosts;
+
+
+    public User(String id, String name, LocalDate dob, String email, String password, int followers, int following) {
         this.id = id;
         this.name = name;
         this.dob = dob;
         this.email = email;
+        this.password = password;
         this.followers = followers;
         this.following = following;
     }
 
-    public User(String name, LocalDate dob, String email, int followers, int following) {
+    public User(String name, LocalDate dob, String email, String password, int followers, int following) {
         this.name = name;
         this.dob = dob;
         this.email = email;
+        this.password = password;
         this.followers = followers;
         this.following = following;
     }
@@ -36,11 +80,11 @@ public class User {
 
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -84,6 +128,14 @@ public class User {
         this.following = following;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 //    public int getAge() {
 //        return Period.between(this.dob, LocalDate.now()).getYears();
 //    }
@@ -91,4 +143,5 @@ public class User {
 //    public void setAge(int age) {
 //        this.age = age;
 //    }
+
 }

@@ -21,7 +21,7 @@ public class FollowService {
         this.userRepository = userRepository;
     }
 
-    public void saveFollow(Long user1Id, Long user2Id) throws NullPointerException{
+    public void saveFollow(String user1Id, String user2Id) throws NullPointerException{
         User user1 = userRepository.getById(user1Id);
         User user2 = userRepository.getById(user2Id);
 
@@ -33,7 +33,7 @@ public class FollowService {
         }
     }
 
-    public List<List<User>> getFollows(Long userId){
+    public List<List<User>> getFollows(String userId){
         User user = userRepository.getById(userId);
         List<Follow> followers = followRepository.findByFirstUser(user);
         List<Follow> followings = followRepository.findBySecondUser(user);
@@ -53,7 +53,7 @@ public class FollowService {
     }
 
 //    function to remove a follow
-    public void removeFollow(Long user1Id, Long user2Id) throws NullPointerException{
+    public void removeFollow(String user1Id, String user2Id) throws NullPointerException{
         User user1 = userRepository.getById(user1Id);
         User user2 = userRepository.getById(user2Id);
         Follow follow = followRepository.findByFirstUserAndSecondUser(user1, user2);

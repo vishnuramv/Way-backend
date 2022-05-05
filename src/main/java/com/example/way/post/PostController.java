@@ -21,12 +21,12 @@ public class PostController {
     }
 
     @GetMapping(path = "{userID}")
-    public List<Post> getUserPosts(@PathVariable("userID") Long userID) {
+    public List<Post> getUserPosts(@PathVariable("userID") String userID) {
         return postService.getUserPosts(userID);
     }
 
     @GetMapping(path = "{postId}")
-    public Optional<Post> getPost(@PathVariable("postId") Long postId) {
+    public Optional<Post> getPost(@PathVariable("postId") String postId) {
         return postService.getPost(postId);
     }
 
@@ -36,12 +36,12 @@ public class PostController {
     }
 
     @DeleteMapping(path = "{postId}")
-    public void deletePost(@PathVariable("postId") Long postId) {
+    public void deletePost(@PathVariable("postId") String postId) {
         postService.deletePost(postId);
     }
 
     @PutMapping(path = "{postId}")
-    public void updatePost(@PathVariable("postId") Long postId, @RequestParam(required = false) String title, @RequestParam(required = false) String content) {
+    public void updatePost(@PathVariable("postId") String postId, @RequestParam(required = false) String title, @RequestParam(required = false) String content) {
         postService.updatePost(postId, title, content);
     }
 }

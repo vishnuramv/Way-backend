@@ -24,14 +24,14 @@ public class PostService {
     public List<Post> getPosts() {
         return postRepository.findAllByOrderByPostIdDesc();
     }
-    public List<Post> getUserPosts(Long userID) {
+    public List<Post> getUserPosts(String userID) {
         User user = userRepository.getById(userID);
         return postRepository.findPostByUserOrderByPostId(user);
     }
 
 
 
-    public Optional<Post> getPost(Long postId) {
+    public Optional<Post> getPost(String postId) {
         return postRepository.findById(postId);
     }
 
@@ -39,7 +39,7 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public void deletePost(Long postId) {
+    public void deletePost(String postId) {
         boolean exists = postRepository.existsById(postId);
         if (!exists) {
             throw new IllegalStateException("No post present by this id: " + postId);
@@ -48,7 +48,7 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Long postId, String title, String content) {
+    public void updatePost(String postId, String title, String content) {
         Post post = postRepository.
                 findById(postId).orElseThrow(
                         () -> new IllegalStateException("No Post present by this id: " + postId)

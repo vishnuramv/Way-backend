@@ -1,6 +1,7 @@
 package com.example.way.post;
 
 import com.example.way.user.User;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.lang.NonNull;
@@ -9,10 +10,17 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table
+@Table(name = "post")
 public class Post {
-    private @Id @GeneratedValue Long postId;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(
+            name = "uuid",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", nullable = false, updatable = false)
+    private String postId;
+    @ManyToOne
     private User user;
     @NonNull
     private String title;
@@ -34,7 +42,7 @@ public class Post {
         this.downVotes = downVotes;
     }
 
-    public Post(Long postId, @NonNull String title, @NonNull String content, int upVotes, int downVotes, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public Post(String postId, @NonNull String title, @NonNull String content, int upVotes, int downVotes, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.postId = postId;
         this.title = title;
         this.content = content;
@@ -44,11 +52,11 @@ public class Post {
         this.modifiedAt = modifiedAt;
     }
 
-    public Long getPostId() {
+    public String getPostId() {
         return postId;
     }
 
-    public void setPostId(Long postId) {
+    public void setPostId(String postId) {
         this.postId = postId;
     }
 

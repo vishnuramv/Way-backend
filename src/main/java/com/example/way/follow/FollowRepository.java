@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface FollowRepository extends JpaRepository<Follow,Long> {
+public interface FollowRepository extends JpaRepository<Follow,String> {
     boolean existsByFirstUserAndSecondUser(User first, User second);
 
     List<Follow> findByFirstUser(User user);

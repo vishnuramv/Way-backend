@@ -1,17 +1,26 @@
 package com.example.way.user;
 
+import com.example.way.provider.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtProvider jwtTokenProvider;
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -19,20 +28,38 @@ public class UserService {
     }
 
 
+    public Map login(User user){
+        User userOptional = userRepository.findUserByEmail(user.getEmail());
+        if (userOptional==null) {
+            throw new IllegalStateException("No user present by this email: " + user.getEmail());
+        }
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+        String token = jwtTokenProvider.createToken(userOptional.getEmail());
+        Map<Object, Object> model = new HashMap<>();
+        model.put("email", userOptional.getEmail());
+        model.put("Token", token);
+        return model;
+
+    }
+
+    public void signup(User user) {
+        userRepository.save(user);
+    }
+
     public List<User> getUsers() {
         return userRepository.findAll();
     }
 
     public void addNewUser(User user) {
-        Optional<User> userOptional = userRepository.findUserByEmail(user.getEmail());
-        if (userOptional.isPresent()) {
+        User userOptional = userRepository.findUserByEmail(user.getEmail());
+        if (userOptional== null) {
             throw new IllegalStateException("email taken");
         }
         userRepository.save(user);
 
     }
 
-    public void deleteUser(Long userId) {
+    public void deleteUser(String userId) {
         boolean exists = userRepository.existsById(userId);
         if (!exists) {
             throw new IllegalStateException("No user present by this id: " + userId);
@@ -41,7 +68,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(Long userId, String name, String email) {
+    public void updateUser(String userId, String name, String email) {
         User user = userRepository.
                 findById(userId).orElseThrow(
                         () -> new IllegalStateException("No user present by this id: " + userId)
@@ -50,11 +77,12 @@ public class UserService {
             user.setName(name);
         }
         if (email != null && email.length() > 0 && !Objects.equals(user.getEmail(), email)) {
-            Optional<User> userOptional = userRepository.findUserByEmail(email);
-            if (userOptional.isPresent()) {
+            User userOptional = userRepository.findUserByEmail(email);
+            if (userOptional==null) {
                 throw new IllegalStateException("Email taken");
             }
             user.setEmail(email);
         }
     }
+
 }

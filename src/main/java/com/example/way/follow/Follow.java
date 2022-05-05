@@ -1,23 +1,36 @@
 package com.example.way.follow;
 
 import com.example.way.user.User;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
+@Entity
+@Table(name = "follow")
 public class Follow {
-    private @Id @GeneratedValue Long id;
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(
+            name = "uuid",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", nullable = false, updatable = false)
+    private String id;
     @CreatedDate
     private LocalDate createdDate;
 
-    @ManyToMany(cascade = CascadeType.REMOVE)
+    //following
+    @ManyToOne(cascade = CascadeType.REMOVE)
     User firstUser;
 
-    @ManyToMany(cascade = CascadeType.REMOVE)
+    //followed
+    @ManyToOne(cascade = CascadeType.REMOVE)
     User secondUser;
 
-    public Follow(Long id, User firstUser, User secondUser) {
+    public Follow(String id, User firstUser, User secondUser) {
         this.id = id;
         this.firstUser = firstUser;
         this.secondUser = secondUser;
@@ -32,11 +45,11 @@ public class Follow {
 
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
