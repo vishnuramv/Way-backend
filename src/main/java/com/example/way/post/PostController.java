@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping(path= "api/v1/post")
 public class PostController {
     private final PostService postService;
 
@@ -15,12 +16,12 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping
+    @GetMapping(path="get-post")
     public List<Post> getPosts() {
         return postService.getPosts();
     }
 
-    @GetMapping(path = "{userID}")
+    @GetMapping(path = "user/{userID}")
     public List<Post> getUserPosts(@PathVariable("userID") String userID) {
         return postService.getUserPosts(userID);
     }

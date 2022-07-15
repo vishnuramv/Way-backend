@@ -39,7 +39,7 @@ public class SavedPostService {
         User user = userRepository.getById(userId);
         Post post = postRepository.getById(postId);
 
-        SavedPost savedPost = new SavedPost();
+//        SavedPost savedPost = new SavedPost();
         if( savedPostRepository.existsByUserAndPost(user, post) ){
             savedPostRepository.deleteByUserAndPost(user, post);
         }

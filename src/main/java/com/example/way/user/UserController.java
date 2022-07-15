@@ -9,7 +9,7 @@ import java.util.List;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping(path = "user")
+@RequestMapping(path = "api/v1/user")
 public class UserController {
     private final UserService userService;
 
@@ -25,8 +25,9 @@ public class UserController {
 
     @PostMapping(path = "signup")
     public ResponseEntity<String> signup(@RequestBody User user) {
+        System.out.println(user);
         userService.signup(user);
-        return ok("");
+        return ok("success");
     }
 
 
