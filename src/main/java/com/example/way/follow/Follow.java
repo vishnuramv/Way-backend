@@ -23,11 +23,11 @@ public class Follow {
     private LocalDate createdDate;
 
     //following
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.DETACH)
     User firstUser;
 
     //followed
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.DETACH)
     User secondUser;
 
     public Follow(String id, User firstUser, User secondUser) {

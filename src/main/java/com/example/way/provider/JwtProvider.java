@@ -1,5 +1,6 @@
 package com.example.way.provider;
 
+import com.example.way.user.UserService;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,9 +18,10 @@ public class JwtProvider {
 
     private final String secret = "secret";
 
-    private final long validityInMilli = 24*60*60*1000;
     @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private UserService userService;
+
+    private final long validityInMilli = 24*60*60*1000;
 
     public String createToken(String username){
         Date validity = new Date(System.currentTimeMillis() + validityInMilli);
@@ -39,11 +41,12 @@ public class JwtProvider {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+
         return username;
     }
 
     public Authentication getAuthentication(String token){
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(getUsername(token));
+        UserDetails userDetails = userService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails,"", new ArrayList<>());
     }
 

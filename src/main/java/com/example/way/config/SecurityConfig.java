@@ -3,6 +3,7 @@ package com.example.way.config;
 import com.example.way.filter.JwtFilter;
 import com.example.way.provider.JwtProvider;
 import com.example.way.service.CustomUserDetailsService;
+import com.example.way.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -24,8 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtProvider jwtProvider;
 
     @Autowired
-    private CustomUserDetailsService customUserDetailsService;
-
+    private UserService userService;
 
     @Bean
     @Override
@@ -36,13 +36,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                .httpBasic().disable()
+                .httpBasic().disable().cors().and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/user/login", "/user/signup").permitAll()
-                .antMatchers(HttpMethod.GET, "/news").permitAll()
+                .antMatchers("/api/v1/user","/api/v1/user/login", "/api/v1/user/signup").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(jwtProvider));
@@ -51,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(customUserDetailsService).passwordEncoder(NoOpPasswordEncoder.getInstance());
+        auth.userDetailsService(userService).passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
 }
 

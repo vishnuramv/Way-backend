@@ -1,15 +1,14 @@
-package com.example.way.savedPost;
+package com.example.way.likes;
 
 import com.example.way.post.Post;
 import com.example.way.user.User;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "saved_post")
-public class SavedPost {
+@Table(name = "liked_post")
+public class Likes {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(
@@ -25,30 +24,16 @@ public class SavedPost {
     @ManyToOne(cascade = CascadeType.DETACH)
     Post post;
 
-
-//    @ManyToOne(targetEntity = User.class, cascade = CascadeType.DETACH)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    @JsonIgnoreProperties(value = {"saved_post", "hibernateLazyInitializer"})
-//    private User user;
-//    @ManyToOne(targetEntity = Post.class, cascade = CascadeType.DETACH)
-//    @JoinColumn(name = "post_id", nullable = false)
-//    @JsonIgnoreProperties(value = {"saved_post", "hibernateLazyInitializer"})
-//    private Post post;
-
-
-
-    public SavedPost(String id, User user, Post post) {
+    public Likes(String id, User user, Post post) {
         this.id = id;
         this.user = user;
         this.post = post;
     }
 
-    public SavedPost(User user, Post post) {
-        this.user = user;
-        this.post = post;
+    public Likes(User user, Post post) {
     }
 
-    public SavedPost() {
+    public Likes() {
     }
 
     public String getId() {

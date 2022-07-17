@@ -4,6 +4,7 @@ import com.example.way.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -17,9 +18,9 @@ public class FollowController {
         this.followService = followService;
     }
 
-    @GetMapping()
-    public String addFollow(@RequestBody String user1Id, @RequestBody String user2Id) throws NullPointerException{
-        followService.saveFollow(user1Id,user2Id);
+    @GetMapping(path = "add/{userId}")
+    public String addFollow(@PathVariable("userId") String userId) throws NullPointerException{
+        followService.saveFollow(userId);
         return "Follow added successfully";
     }
 
@@ -30,13 +31,14 @@ public class FollowController {
 //    }
 //    function for removeFollow
     @DeleteMapping()
-    public String removeFollow(@RequestBody String user1Id, @RequestBody String user2Id) throws NullPointerException{
-        followService.removeFollow(user1Id,user2Id);
+    public String removeFollow(@RequestBody String userId) throws NullPointerException{
+        System.out.println("Hello user ----->>>>    "+userId);
+        followService.removeFollow(userId);
         return "Follow removed successfully";
     }
 
     @GetMapping("{userId}")
-    public List<List<User>> getFollow(@PathVariable String userId) throws NullPointerException{
+    public HashMap<String,List<User>> getFollow(@PathVariable String userId) throws NullPointerException{
         return followService.getFollows(userId);
     }
 

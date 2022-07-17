@@ -44,13 +44,13 @@ public class User {
     @JsonIgnore
     private List<Post> posts;
 
-//    @OneToMany(mappedBy = "secondUser")
-//    @JsonIgnore
-//    private List<Follow> followedUsers;
+    @OneToMany(mappedBy = "secondUser")
+    @JsonIgnore
+    private List<Follow> followedUsers;
 
-//    @OneToMany(mappedBy = "firstUser")
-//    @JsonIgnore
-//    private List<Follow> followingUsers;
+    @OneToMany(mappedBy = "firstUser")
+    @JsonIgnore
+    private List<Follow> followingUsers;
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore

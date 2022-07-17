@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -19,15 +20,14 @@ public class UserController {
     }
 
     @PostMapping(path = "login")
-    public ResponseEntity login(@RequestBody User user) {
+    public ResponseEntity<Map<Object, Object>> login(@RequestBody User user) {
         return ok(userService.login(user));
     }
 
     @PostMapping(path = "signup")
     public ResponseEntity<String> signup(@RequestBody User user) {
         System.out.println(user);
-        userService.signup(user);
-        return ok("success");
+        return ok(userService.addNewUser(user));
     }
 
 
@@ -36,10 +36,10 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @PostMapping
-    public void registerNewUser(@RequestBody User user) {
-        userService.addNewUser(user);
-    }
+//    @PostMapping
+//    public void registerNewUser(@RequestBody User user) {
+//        userService.addNewUser(user);
+//    }
 
     @DeleteMapping(path = "{userId}")
     public void deleteUser(@PathVariable("userId") String userId) {

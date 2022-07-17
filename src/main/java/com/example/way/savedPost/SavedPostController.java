@@ -19,19 +19,19 @@ public class SavedPostController {
     }
 
     @GetMapping(path = "save")
-    public String savePost(@RequestBody String postId, @RequestBody String userId) throws NullPointerException{
-        savedPostService.savePost(postId, userId);
-        return "Follow added successfully";
+    public String savePost(@RequestBody String postId) throws NullPointerException{
+        savedPostService.savePost(postId);
+        return "Post-> "+ postId +" saved successfully";
     }
 
     @GetMapping(path= "get-posts")
-    public List<Post> getSavedPosts(@RequestBody String userId) throws NullPointerException{
-        return savedPostService.getSavedPosts(userId);
+    public List<Post> getSavedPosts() throws NullPointerException{
+        return savedPostService.getSavedPosts();
     }
 
     @DeleteMapping(path= "delete-post")
-    public String deleteSavedPost(@RequestBody String postId, @RequestBody String userId) throws NullPointerException{
-        savedPostService.deletePost(postId, userId);
-        return "Follow removed successfully";
+    public String deleteSavedPost(@RequestBody String postId) throws NullPointerException{
+        savedPostService.deletePost(postId);
+        return "Post-> "+ postId +" removed successfully";
     }
 }

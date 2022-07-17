@@ -1,9 +1,12 @@
 package com.example.way.post;
 
 import com.example.way.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.UpdateTimestamp;
+//import org.springframework.data.annotation.CreatedDate;
+//import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
@@ -20,17 +23,28 @@ public class Post {
     )
     @Column(name = "id", nullable = false, updatable = false)
     private String postId;
-    @ManyToOne
+    @ManyToOne(targetEntity = User.class)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties(value = {"post", "hibernateLazyInitializer"})
     private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @NonNull
     private String title;
     @NonNull
     private String content;
     private int upVotes;
     private int downVotes;
-    @CreatedDate
+    @CreationTimestamp
     private LocalDateTime createdAt;
-    @LastModifiedDate
+    @UpdateTimestamp
     private LocalDateTime modifiedAt;
     public Post() {
     }
