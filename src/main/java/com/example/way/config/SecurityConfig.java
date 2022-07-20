@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/user","/api/v1/user/login", "/api/v1/user/signup").permitAll()
+                .antMatchers("/docs/**","/swagger-ui/**","/","/api/v1/user","/api/v1/user/login", "/api/v1/user/signup").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(jwtProvider));

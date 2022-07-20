@@ -21,10 +21,11 @@ public class Post {
             name = "uuid",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Column(name = "id", nullable = false, updatable = false)
+    @Column(name = "post_id", nullable = false, updatable = false)
     private String postId;
+
     @ManyToOne(targetEntity = User.class)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "id", nullable = false)
     @JsonIgnoreProperties(value = {"post", "hibernateLazyInitializer"})
     private User user;
 
@@ -40,6 +41,12 @@ public class Post {
     private String title;
     @NonNull
     private String content;
+    @Column(name = "topic", columnDefinition = "varchar(255) default 'General'")
+    private String topic;
+    @NonNull
+    private String primaryImgUrl;
+    private String secondaryImgUrl;
+    private String tertiaryImgUrl;
     private int upVotes;
     private int downVotes;
     @CreationTimestamp
@@ -49,14 +56,18 @@ public class Post {
     public Post() {
     }
 
-    public Post(@NonNull String title, @NonNull String content, int upVotes, int downVotes) {
+    public Post(@NonNull String title, @NonNull String content, int upVotes, int downVotes, String topic, @NonNull String primaryImgUrl, String secondaryImgUrl, String tertiaryImgUrl) {
         this.title = title;
         this.content = content;
         this.upVotes = upVotes;
         this.downVotes = downVotes;
+        this.topic = topic;
+        this.primaryImgUrl = primaryImgUrl;
+        this.secondaryImgUrl = secondaryImgUrl;
+        this.tertiaryImgUrl = tertiaryImgUrl;
     }
 
-    public Post(String postId, @NonNull String title, @NonNull String content, int upVotes, int downVotes, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public Post(String postId, @NonNull String title, @NonNull String content, int upVotes, int downVotes, String topic, LocalDateTime createdAt, LocalDateTime modifiedAt, @NonNull String primaryImgUrl, String secondaryImgUrl, String tertiaryImgUrl) {
         this.postId = postId;
         this.title = title;
         this.content = content;
@@ -64,6 +75,10 @@ public class Post {
         this.downVotes = downVotes;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
+        this.topic = topic;
+        this.primaryImgUrl = primaryImgUrl;
+        this.secondaryImgUrl = secondaryImgUrl;
+        this.tertiaryImgUrl = tertiaryImgUrl;
     }
 
     public String getPostId() {
@@ -122,5 +137,38 @@ public class Post {
 
     public void setModifiedAt(LocalDateTime modifiedAt) {
         this.modifiedAt = modifiedAt;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    @NonNull
+    public String getPrimaryImgUrl() {
+        return primaryImgUrl;
+    }
+
+    public void setPrimaryImgUrl(@NonNull String primaryImgUrl) {
+        this.primaryImgUrl = primaryImgUrl;
+    }
+
+    public String getSecondaryImgUrl() {
+        return secondaryImgUrl;
+    }
+
+    public void setSecondaryImgUrl(String secondaryImgUrl) {
+        this.secondaryImgUrl = secondaryImgUrl;
+    }
+
+    public String getTertiaryImgUrl() {
+        return tertiaryImgUrl;
+    }
+
+    public void setTertiaryImgUrl(String tertiaryImgUrl) {
+        this.tertiaryImgUrl = tertiaryImgUrl;
     }
 }

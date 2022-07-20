@@ -2,8 +2,10 @@ package com.example.way.user;
 
 import com.example.way.provider.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -47,6 +49,17 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
+    public HashMap<String, Object> getUser(String username) {
+        HashMap<String, Object> output = new HashMap<>();
+        if(userRepository.findUserByUsername(username)==null) {
+            throw new UsernameNotFoundException("No user present by this email: " + username);
+        }
+        User user = userRepository.findUserByUsername(username);
+        output.put("user", user);
+        output.put("message", "User found");
+        return output;
+    }
+
     public String addNewUser(User user) {
         User userOptional = userRepository.findUserByEmail(user.getEmail());
         if (userOptional!= null) {
@@ -56,31 +69,58 @@ public class UserService implements UserDetailsService {
         return (user.getEmail()+" has been created successfully");
     }
 
-    public void deleteUser(String userId) {
-        boolean exists = userRepository.existsById(userId);
+    public String deleteUser() {
+        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        boolean exists = userRepository.existsById(user.getUsername());
         if (!exists) {
-            throw new IllegalStateException("No user present by this id: " + userId);
+            throw new IllegalStateException("No user present by this id: " + user.getUsername());
         }
-        userRepository.deleteById(userId);
+        userRepository.deleteById(user.getUsername());
+        return ("User deleted");
     }
 
     @Transactional
-    public void updateUser(String userId, String name, String email) {
-        User user = userRepository.
-                findById(userId).orElseThrow(
-                        () -> new IllegalStateException("No user present by this id: " + userId)
-                );
-        if (name != null && name.length() > 0 && !Objects.equals(user.getName(), name)) {
-            user.setName(name);
+    public String updateUser(User user) {
+        System.out.println("jello");
+        UserDetails userReq = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println(userReq.getUsername());
+        User userOptional = userRepository.findUserById(userReq.getUsername());
+        System.out.println("hello");
+        System.out.println(userOptional.getUsername());
+        System.out.println(user.getUsername());
+
+//        userRepository.UpdateUser(user.getEmail(), user.getUsername(), user.getName(),user.getDob(), user.isPublic(), user.getPassword(), user.getDpUrl(), userOptional.getId());
+
+        if (user.getName() != null && user.getName().length() > 0 && !Objects.equals(user.getName(), userOptional.getName())) {
+            userOptional.setName(user.getName());
         }
-        if (email != null && email.length() > 0 && !Objects.equals(user.getEmail(), email)) {
-            User userOptional = userRepository.findUserByEmail(email);
-            if (userOptional == null) {
-                throw new IllegalStateException("Email taken");
+        if (user.getDob() != null && !Objects.equals(user.getDob(), userOptional.getDob())) {
+            userOptional.setDob(user.getDob());
+        }
+        if (user.getEmail() != null && user.getEmail().length() > 0 && !Objects.equals(user.getEmail(), userOptional.getEmail())) {
+            if(userRepository.findUserByEmail(user.getEmail())!=null) {
+                throw new IllegalStateException("email taken");
             }
-            user.setEmail(email);
+            userOptional.setEmail(user.getEmail());
         }
-        userRepository.save(user);
+        if (user.getPassword() != null && user.getPassword().length() > 0 && !Objects.equals(user.getPassword(), userOptional.getPassword())) {
+            userOptional.setPassword(user.getPassword());
+        }
+        if (!Objects.equals(user.isPublic(), userOptional.isPublic())) {
+            userOptional.setPublic(user.isPublic());
+        }
+        if (user.getDpUrl() != null && user.getDpUrl().length() > 0 && !Objects.equals(user.getDpUrl(), userOptional.getDpUrl())) {
+            userOptional.setDpUrl(user.getDpUrl());
+        }
+
+        if(user.getUsername() != null && user.getUsername().length() > 0 && !Objects.equals(user.getUsername(), userOptional.getUsername())) {
+            if(userRepository.findUserByUsername(user.getUsername())!=null) {
+                throw new IllegalStateException("username taken");
+            }
+            userOptional.setUsername(user.getUsername());
+        }
+        userRepository.save(userOptional);
+        return ("User updated successfully");
     }
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

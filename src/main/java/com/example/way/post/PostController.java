@@ -2,6 +2,7 @@ package com.example.way.post;
 
 //import com.example.way.user.User;
 //import com.example.way.user.UserRepository;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,7 @@ public class PostController {
         return postService.getPosts();
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping(path = "get-my-post")
     public List<Post> getUserPosts() {
         return postService.getUserPosts();
@@ -57,6 +59,7 @@ public class PostController {
         return postService.getPost(postId);
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
     public ResponseEntity<String> registerNewPost(@RequestBody Post post) {
 //        User user = userRepository.getById(postData.getUserid());
@@ -67,13 +70,15 @@ public class PostController {
         return ResponseEntity.ok(postService.addNewPost(post));
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping(path = "{postId}")
     public ResponseEntity<String> deletePost(@PathVariable("postId") String postId) {
         return ResponseEntity.ok(postService.deletePost(postId));
     }
 
-    @PutMapping(path = "{postId}")
-    public void updatePost(@PathVariable("postId") String postId, @RequestParam(required = false) String title, @RequestParam(required = false) String content) {
-        postService.updatePost(postId, title, content);
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PutMapping()
+    public ResponseEntity<String> updatePost(@RequestBody Post post) {
+        return ResponseEntity.ok(postService.updatePost(post));
     }
 }

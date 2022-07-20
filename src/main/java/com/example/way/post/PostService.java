@@ -31,7 +31,6 @@ public class PostService {
         return postRepository.findAllByOrderByPostIdDesc();
     }
     public List<Post> getUserPosts() {
-//        User user = userRepository.getById(userID);
         UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return postRepository.findPostByUserOrderByPostId(userRepository.getById(user.getUsername()));
     }
@@ -58,7 +57,8 @@ public class PostService {
         if (post.isEmpty()) {
             throw new IllegalStateException("No post present by this id: " + postId);
         }
-        if(post.get().getUser().getEmail().equals(user.getUsername())) {
+        System.out.println("user"+user.getUsername());
+        if(post.get().getUser().getId().equals(user.getUsername())) {
             postRepository.deleteById(postId);
             return ("post-->"+postId+" deleted successfully by " + post.get().getUser());
         }
@@ -68,17 +68,42 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(String postId, String title, String content) {
-        Post post = postRepository.
-                findById(postId).orElseThrow(
-                        () -> new IllegalStateException("No Post present by this id: " + postId)
-                );
-        if (title != null && title.length() > 0 && !Objects.equals(post.getTitle(), title)) {
-            post.setTitle(title);
+    public String updatePost(Post post) {
+        Optional<Post> postOptional = postRepository.findById(post.getPostId());
+        if (postOptional.isEmpty()) {
+            throw new IllegalStateException("No post present by this id: " + post.getPostId());
         }
-        if (content != null && content.length() > 0 && !Objects.equals(post.getContent(), content)) {
-            post.setTitle(content);
+        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("user update" + user.getUsername());
+        if(postOptional.get().getUser().getId().equals(user.getUsername())) {
+            if (post.getTitle() != null && post.getTitle().length() > 0 && !Objects.equals(post.getTitle(), postOptional.get().getTitle())) {
+                postOptional.get().setTitle(post.getTitle());
+            }
+            if (post.getContent() != null && post.getContent().length() > 0 && !Objects.equals(post.getContent(), postOptional.get().getContent())) {
+                postOptional.get().setContent(post.getContent());
+            }
+            if (post.getTopic() != null && post.getTopic().length() > 0 && !Objects.equals(post.getTopic(), postOptional.get().getTopic())) {
+                postOptional.get().setTopic(post.getTopic());
+            }
+            if (post.getPrimaryImgUrl() != null && post.getPrimaryImgUrl().length() > 0 && !Objects.equals(post.getPrimaryImgUrl(), postOptional.get().getPrimaryImgUrl())) {
+                postOptional.get().setPrimaryImgUrl(post.getPrimaryImgUrl());
+            }
+            if (post.getSecondaryImgUrl() != null && post.getSecondaryImgUrl().length() > 0 && !Objects.equals(post.getSecondaryImgUrl(), postOptional.get().getSecondaryImgUrl())) {
+                postOptional.get().setSecondaryImgUrl(post.getSecondaryImgUrl());
+            }
+            if (post.getTertiaryImgUrl() != null && post.getTertiaryImgUrl().length() > 0 && !Objects.equals(post.getTertiaryImgUrl(), postOptional.get().getTertiaryImgUrl())) {
+                postOptional.get().setTertiaryImgUrl(post.getTertiaryImgUrl());
+            }
+            if(post.getTopic() != null && post.getTopic().length() > 0 && !Objects.equals(post.getTopic(), postOptional.get().getTopic())) {
+                postOptional.get().setTopic(post.getTopic());
+            }
+            postRepository.save(postOptional.get());
+            return ("post-->"+post.getPostId()+" updated successfully by " + postOptional.get().getUser().getUsername());
         }
-        postRepository.save(post);
+        else {
+            throw new IllegalStateException("You are not authorized to update this post");
+        }
     }
+
+
 }

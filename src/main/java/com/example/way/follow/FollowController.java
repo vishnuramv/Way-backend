@@ -1,6 +1,7 @@
 package com.example.way.follow;
 
 import com.example.way.user.User;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ public class FollowController {
         this.followService = followService;
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping(path = "add/{userId}")
     public String addFollow(@PathVariable("userId") String userId) throws NullPointerException{
         followService.saveFollow(userId);
@@ -30,6 +32,8 @@ public class FollowController {
 //        return "Friend added successfully";
 //    }
 //    function for removeFollow
+
+    @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping()
     public String removeFollow(@RequestBody String userId) throws NullPointerException{
         System.out.println("Hello user ----->>>>    "+userId);
@@ -37,6 +41,7 @@ public class FollowController {
         return "Follow removed successfully";
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("{userId}")
     public HashMap<String,List<User>> getFollow(@PathVariable String userId) throws NullPointerException{
         return followService.getFollows(userId);

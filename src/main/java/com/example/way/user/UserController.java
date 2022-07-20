@@ -1,9 +1,11 @@
 package com.example.way.user;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +32,10 @@ public class UserController {
         return ok(userService.addNewUser(user));
     }
 
+    @GetMapping(path = "{username}")
+    public ResponseEntity<HashMap<String, Object>> getUser(@PathVariable String username) {
+        return ok(userService.getUser(username));
+    }
 
     @GetMapping
     public List<User> getUsers() {
@@ -41,13 +47,16 @@ public class UserController {
 //        userService.addNewUser(user);
 //    }
 
-    @DeleteMapping(path = "{userId}")
-    public void deleteUser(@PathVariable("userId") String userId) {
-        userService.deleteUser(userId);
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @DeleteMapping()
+    public ResponseEntity<String> deleteUser() {
+        return ok(userService.deleteUser());
     }
 
-    @PutMapping(path = "{userId}")
-    public void updateUser(@PathVariable("userId") String userId, @RequestParam(required = false) String name, @RequestParam(required = false) String email) {
-        userService.updateUser(userId, name, email);
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PutMapping()
+    public ResponseEntity<String> updateUser(@RequestBody User user) {
+        return ok(userService.updateUser(user));
     }
 }
