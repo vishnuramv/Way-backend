@@ -11,6 +11,7 @@ import java.util.Map;
 
 import static org.springframework.http.ResponseEntity.ok;
 
+@CrossOrigin
 @RestController
 @RequestMapping(path = "api/v1/user")
 public class UserController {
@@ -27,7 +28,7 @@ public class UserController {
     }
 
     @PostMapping(path = "signup")
-    public ResponseEntity<String> signup(@RequestBody User user) {
+    public ResponseEntity<Map<Object, Object>> signup(@RequestBody User user) {
         System.out.println(user);
         return ok(userService.addNewUser(user));
     }

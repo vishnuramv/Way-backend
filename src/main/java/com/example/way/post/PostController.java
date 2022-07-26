@@ -30,6 +30,7 @@ import java.util.Optional;
 //        this.post = post;
 //    }
 //}
+@CrossOrigin
 @RestController
 @RequestMapping(path= "api/v1/post")
 public class PostController {

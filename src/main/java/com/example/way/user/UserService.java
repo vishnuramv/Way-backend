@@ -36,7 +36,12 @@ public class UserService implements UserDetailsService {
         String token = jwtTokenProvider.createToken(userOptional.getEmail());
         Map<Object, Object> model = new HashMap<>();
         model.put("email", userOptional.getEmail());
-        model.put("Token", token);
+        model.put("name", userOptional.getName());
+        model.put("username", userOptional.getUsername());
+        model.put("token", token);
+        model.put("dp_url", userOptional.getDpUrl());
+        model.put("dob", userOptional.getDob());
+        model.put("userId", userOptional.getId());
         return model;
     }
 
@@ -60,13 +65,17 @@ public class UserService implements UserDetailsService {
         return output;
     }
 
-    public String addNewUser(User user) {
+    public Map<Object, Object> addNewUser(User user) {
         User userOptional = userRepository.findUserByEmail(user.getEmail());
         if (userOptional!= null) {
             throw new IllegalStateException("email taken");
         }
+        if(userRepository.findUserByUsername(user.getUsername())!=null) {
+            throw new IllegalStateException("username taken");
+        }
         userRepository.save(user);
-        return (user.getEmail()+" has been created successfully");
+        Map<Object, Object> model = login(user);
+        return model;
     }
 
     public String deleteUser() {
