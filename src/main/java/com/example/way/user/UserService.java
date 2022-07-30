@@ -88,6 +88,16 @@ public class UserService implements UserDetailsService {
         return ("User deleted");
     }
 
+    public String logout() {
+        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        boolean exists = userRepository.existsById(user.getUsername());
+        if (!exists) {
+            throw new IllegalStateException("No user present by this id: " + user.getUsername());
+        }
+        SecurityContextHolder.getContext().setAuthentication(null);
+        return ("User logged out");
+    }
+
     @Transactional
     public String updateUser(User user) {
         System.out.println("jello");

@@ -9,6 +9,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
+import java.util.Map;
+
 @Service
 public class LikesService {
     @Autowired
@@ -20,7 +23,7 @@ public class LikesService {
 
     public void upVotePosts(String postId) throws NullPointerException{
         UserDetails userreq = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Post post = postRepository.getById(postId);
+        Post post = postRepository.getById(postId.substring(0, postId.length() - 1));
         User user = userRepository.getById(userreq.getUsername());
         Likes likes = new Likes();
         if( !(likesRepository.existsByUserAndPost(user, post)) ){
@@ -34,6 +37,7 @@ public class LikesService {
     public void unUpVotePosts(String postId) throws NullPointerException{
         UserDetails userreq = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.getById(userreq.getUsername());
+        System.out.println("postid"+ postId);
         Post post = postRepository.getById(postId);
         if( likesRepository.existsByUserAndPost(user, post) ){
             Likes likes = likesRepository.findByUserAndPost(user, post);
@@ -47,7 +51,7 @@ public class LikesService {
     public void unDownVotePost(String postId) throws NullPointerException{
         UserDetails userreq = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.getById(userreq.getUsername());
-        Post post = postRepository.getById(postId);
+        Post post = postRepository.getById(postId.substring(0, postId.length() - 1));
         if( likesRepository.existsByUserAndPost(user, post) ){
             Likes likes = likesRepository.findByUserAndPost(user, post);
             likesRepository.delete(likes);
@@ -60,7 +64,7 @@ public class LikesService {
     public void downVotePosts(String postId) throws NullPointerException{
         UserDetails userreq = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.getById(userreq.getUsername());
-        Post post = postRepository.getById(postId);
+        Post post = postRepository.getById(postId.substring(0, postId.length() - 1));
         Likes likes = new Likes();
         if( !likesRepository.existsByUserAndPost(user, post) ){
             likes.setPost(post);
@@ -68,6 +72,19 @@ public class LikesService {
             likesRepository.save(likes);
             post.setDownVotes(post.getDownVotes()+1);
             postRepository.save(post);
+        }
+    }
+
+    public Map<Object, Object> isVoted(String postId) throws NullPointerException {
+        UserDetails userreq = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.getById(userreq.getUsername());
+        Post post = postRepository.getById(postId.substring(0, postId.length() - 1));
+        System.out.println(postId.substring(0, postId.length() - 1));
+        System.out.println(user.getId());
+        if( likesRepository.existsByUserAndPost(user, post) ){
+            return Map.of("voted", true);
+        } else {
+            return Map.of("voted", false);
         }
     }
 }

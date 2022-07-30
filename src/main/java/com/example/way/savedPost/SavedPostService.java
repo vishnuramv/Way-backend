@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SavedPostService {
@@ -28,7 +29,7 @@ public class SavedPostService {
 
     public void savePost(String postId) throws NullPointerException{
         UserDetails userreq = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Post post = postRepository.getById(postId);
+        Post post = postRepository.getById(postId.substring(0, postId.length()-1));
         User user = userRepository.getById(userreq.getUsername());
         SavedPost savedPost = new SavedPost();
         if( !(savedPostRepository.existsByUserAndPost(user, post)) ){
@@ -61,6 +62,17 @@ public class SavedPostService {
         }
         System.out.println("saved posts--->>>"+posts);
         return posts;
+    }
+
+    public Map<Object, Object> isSaved(String postId){
+        UserDetails userreq = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.getById(userreq.getUsername());
+        Post post = postRepository.getById(postId.substring(0, postId.length()-1));
+        if( savedPostRepository.existsByUserAndPost(user, post) ){
+            return Map.of("isSaved", true);
+        } else {
+            return Map.of("isSaved", false);
+        }
     }
 }
 

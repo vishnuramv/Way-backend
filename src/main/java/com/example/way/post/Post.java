@@ -40,6 +40,7 @@ public class Post {
     @NonNull
     private String title;
     @NonNull
+    @Column(columnDefinition = "TEXT")
     private String content;
     @Column(name = "topic", columnDefinition = "varchar(255) default 'General'")
     private String topic;

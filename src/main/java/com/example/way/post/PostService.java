@@ -10,9 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PostService {
@@ -43,12 +41,16 @@ public class PostService {
         return postRepository.findById(postId);
     }
 
-    public String addNewPost(Post post) {
+    public Map<Object, Object> addNewPost(Post post) {
         UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         LOGGER.info("The user details are: {}", user.getUsername());
         post.setUser(userRepository.getById(user.getUsername()));
         postRepository.save(post);
-        return ("post created successfully by " + post.getUser());
+        Map<Object, Object> response = new HashMap<>();
+        response.put("message", "Post added successfully");
+        response.put("postId", post.getPostId());
+        response.put("code", 200);
+        return response;
     }
 
     public String deletePost(String postId) {

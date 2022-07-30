@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 //class PostData{
@@ -30,9 +31,9 @@ import java.util.Optional;
 //        this.post = post;
 //    }
 //}
-@CrossOrigin
 @RestController
 @RequestMapping(path= "api/v1/post")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PostController {
     @Autowired
     private PostService postService;
@@ -43,26 +44,26 @@ public class PostController {
 //        this.postService = postService;
 //        this.userRepository = userRepository;
 //    }
-
+//    @CrossOrigin()
     @GetMapping(path="get-post")
     public List<Post> getPosts() {
         return postService.getPosts();
     }
-
+//    @CrossOrigin()
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping(path = "get-my-post")
     public List<Post> getUserPosts() {
         return postService.getUserPosts();
     }
-
-    @GetMapping(path = "{postId}")
+//    @CrossOrigin()
+    @GetMapping(path = "get-post/{postId}")
     public Optional<Post> getPost(@PathVariable("postId") String postId) {
         return postService.getPost(postId);
     }
-
+//    @CrossOrigin()
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
-    public ResponseEntity<String> registerNewPost(@RequestBody Post post) {
+    public ResponseEntity<Map<Object, Object>> registerNewPost(@RequestBody Post post) {
 //        User user = userRepository.getById(postData.getUserid());
 //        Post post = new Post();
 //        post.setTitle(postData.getPost().getTitle());
@@ -70,13 +71,13 @@ public class PostController {
 //        post.setUser(user);
         return ResponseEntity.ok(postService.addNewPost(post));
     }
-
+//    @CrossOrigin()
     @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping(path = "{postId}")
     public ResponseEntity<String> deletePost(@PathVariable("postId") String postId) {
         return ResponseEntity.ok(postService.deletePost(postId));
     }
-
+//    @CrossOrigin()
     @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping()
     public ResponseEntity<String> updatePost(@RequestBody Post post) {

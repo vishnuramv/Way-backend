@@ -35,6 +35,7 @@ public class UserController {
 
     @GetMapping(path = "{username}")
     public ResponseEntity<HashMap<String, Object>> getUser(@PathVariable String username) {
+        System.out.println("Hello user ----->>>>    "+username);
         return ok(userService.getUser(username));
     }
 
@@ -59,5 +60,11 @@ public class UserController {
     @PutMapping()
     public ResponseEntity<String> updateUser(@RequestBody User user) {
         return ok(userService.updateUser(user));
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping(path = "logout")
+    public ResponseEntity<String> logout() {
+        return ok(userService.logout());
     }
 }
