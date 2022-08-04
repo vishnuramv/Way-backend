@@ -90,6 +90,7 @@ public class UserService implements UserDetailsService {
 
     public String logout() {
         UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("logged user"+user.getUsername());
         boolean exists = userRepository.existsById(user.getUsername());
         if (!exists) {
             throw new IllegalStateException("No user present by this id: " + user.getUsername());

@@ -21,7 +21,7 @@ public class JwtProvider {
     @Autowired
     private UserService userService;
 
-    private final long validityInMilli = 24*60*60*1000;
+    private final long validityInMilli = 24*60*60*1000*10;
 
     public String createToken(String username){
         Date validity = new Date(System.currentTimeMillis() + validityInMilli);

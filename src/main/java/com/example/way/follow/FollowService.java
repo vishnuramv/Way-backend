@@ -24,7 +24,7 @@ public class FollowService {
         this.userRepository = userRepository;
     }
 
-    public void saveFollow(String userId) throws NullPointerException{
+    public String saveFollow(String userId) throws NullPointerException{
         UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         System.out.println("hello user--->>>" + userId);
         User user1 = userRepository.getById(user.getUsername());
@@ -40,16 +40,27 @@ public class FollowService {
             userRepository.save(user1);
             userRepository.save(user2);
         }
+        return "follow added successfully";
     }
 
     public HashMap<String,List<User>> getFollows(String userId){
         User user = userRepository.getById(userId);
-        List<Follow> followers = followRepository.findByFirstUser(user);
-        List<Follow> followings = followRepository.findBySecondUser(user);
+        return getStringListHashMap(user);
+
+    }
+
+    public HashMap<String,List<User>> getMyFollows() {
+        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user1 = userRepository.getById(user.getUsername());
+        return getStringListHashMap(user1);
+    }
+
+    private HashMap<String, List<User>> getStringListHashMap(User user1) {
+        List<Follow> followers = followRepository.findByFirstUser(user1);
+        List<Follow> followings = followRepository.findBySecondUser(user1);
         List<User> followersList = new ArrayList<>();
         List<User> followingsList = new ArrayList<>();
-        HashMap<String,List<User>> output = new HashMap<>();
-//        List<List<User>> output = new ArrayList<>();
+        HashMap<String, List<User>> output = new HashMap<>();
         for (Follow follow : followers) {
             followingsList.add(userRepository.getById(follow.getSecondUser().getId()));
         }
@@ -59,11 +70,10 @@ public class FollowService {
         output.put("followers", followersList);
         output.put("followings", followingsList);
         return output;
-
     }
 
-//    function to remove a follow
-    public void removeFollow(String userId) throws NullPointerException{
+    //    function to remove a follow
+    public String removeFollow(String userId) throws NullPointerException{
         UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user1 = userRepository.getById(user.getUsername());
         User user2 = userRepository.getById(userId);
@@ -78,6 +88,7 @@ public class FollowService {
             user2.setFollowers(user2.getFollowers()-1);
             userRepository.save(user1);
             userRepository.save(user2);
+            return "follow removed successfully";
         } else {
             throw new IllegalStateException("You are not following this user");
         }

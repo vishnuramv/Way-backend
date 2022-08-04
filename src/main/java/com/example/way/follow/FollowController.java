@@ -3,6 +3,7 @@ package com.example.way.follow;
 import com.example.way.user.User;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -22,9 +23,8 @@ public class FollowController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping(path = "add/{userId}")
-    public String addFollow(@PathVariable("userId") String userId) throws NullPointerException{
-        followService.saveFollow(userId);
-        return "Follow added successfully";
+    public ResponseEntity<String> addFollow(@PathVariable("userId") String userId) throws NullPointerException{
+        return ResponseEntity.ok(followService.saveFollow(userId));
     }
 
 //    @GetMapping()
@@ -32,20 +32,24 @@ public class FollowController {
 //        followService.saveFollow(user1Id,user2Id);
 //        return "Friend added successfully";
 //    }
-//    function for removeFollow
 
     @SecurityRequirement(name = "Bearer Authentication")
-    @DeleteMapping()
-    public String removeFollow(@RequestBody String userId) throws NullPointerException{
+    @DeleteMapping("{userId}")
+    public ResponseEntity<String> removeFollow(@PathVariable String userId) throws NullPointerException{
         System.out.println("Hello user ----->>>>    "+userId);
-        followService.removeFollow(userId);
-        return "Follow removed successfully";
+        return ResponseEntity.ok(followService.removeFollow(userId));
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("{userId}")
-    public HashMap<String,List<User>> getFollow(@PathVariable String userId) throws NullPointerException{
-        return followService.getFollows(userId);
+    public ResponseEntity<HashMap<String,List<User>>> getFollow(@PathVariable String userId) throws NullPointerException{
+        return ResponseEntity.ok(followService.getFollows(userId));
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping()
+    public ResponseEntity<HashMap<String,List<User>>> getMyFollows() throws NullPointerException{
+        return ResponseEntity.ok(followService.getMyFollows());
     }
 
 
