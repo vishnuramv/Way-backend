@@ -29,7 +29,7 @@ public class PostService {
         return postRepository.findAllByOrderByPostIdDesc();
     }
     public List<Post> getUserPosts() {
-        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return postRepository.findPostByUserOrderByPostId(userRepository.getById(user.getUsername()));
     }
 
@@ -42,7 +42,8 @@ public class PostService {
     }
 
     public Map<Object, Object> addNewPost(Post post) {
-        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         LOGGER.info("The user details are: {}", user.getUsername());
         post.setUser(userRepository.getById(user.getUsername()));
         postRepository.save(post);
@@ -55,7 +56,8 @@ public class PostService {
 
     public String deletePost(String postId) {
         Optional<Post> post = postRepository.findById(postId);
-        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         if (post.isEmpty()) {
             throw new IllegalStateException("No post present by this id: " + postId);
         }
@@ -75,7 +77,8 @@ public class PostService {
         if (postOptional.isEmpty()) {
             throw new IllegalStateException("No post present by this id: " + post.getPostId());
         }
-        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         System.out.println("user update" + user.getUsername());
         if(postOptional.get().getUser().getId().equals(user.getUsername())) {
             if (post.getTitle() != null && post.getTitle().length() > 0 && !Objects.equals(post.getTitle(), postOptional.get().getTitle())) {

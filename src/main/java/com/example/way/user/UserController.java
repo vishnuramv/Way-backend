@@ -11,9 +11,9 @@ import java.util.Map;
 
 import static org.springframework.http.ResponseEntity.ok;
 
-@CrossOrigin
 @RestController
 @RequestMapping(path = "api/v1/user")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
     private final UserService userService;
 

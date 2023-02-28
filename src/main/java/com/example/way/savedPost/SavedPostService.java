@@ -28,7 +28,8 @@ public class SavedPostService {
     }
 
     public void savePost(String postId) throws NullPointerException{
-        UserDetails userreq = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userreq = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         Post post = postRepository.getById(postId.substring(0, postId.length()-1));
         User user = userRepository.getById(userreq.getUsername());
         SavedPost savedPost = new SavedPost();
@@ -40,7 +41,8 @@ public class SavedPostService {
     }
 
     public void deletePost(String postId) throws NullPointerException{
-        UserDetails userreq = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userreq = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         User user = userRepository.getById(userreq.getUsername());
         Post post = postRepository.getById(postId);
         if( savedPostRepository.existsByUserAndPost(user, post) ){
@@ -51,7 +53,8 @@ public class SavedPostService {
         }
     }
     public List<Post> getSavedPosts(){
-        UserDetails userreq = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userreq = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         User user = userRepository.getById(userreq.getUsername());
         System.out.println("Hello Saved posts \n\n");
         List<SavedPost> savedPosts = savedPostRepository.findByUser(user);
@@ -65,7 +68,8 @@ public class SavedPostService {
     }
 
     public Map<Object, Object> isSaved(String postId){
-        UserDetails userreq = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userreq = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         User user = userRepository.getById(userreq.getUsername());
         Post post = postRepository.getById(postId.substring(0, postId.length()-1));
         if( savedPostRepository.existsByUserAndPost(user, post) ){

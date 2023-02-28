@@ -1,8 +1,10 @@
 package com.example.way.follow;
 
+import com.example.way.post.PostService;
 import com.example.way.user.User;
 import com.example.way.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -10,12 +12,15 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class FollowService {
 
     private final FollowRepository followRepository;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostService.class);
     private final UserRepository userRepository;
 
     @Autowired
@@ -25,7 +30,8 @@ public class FollowService {
     }
 
     public String saveFollow(String userId) throws NullPointerException{
-        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         System.out.println("hello user--->>>" + userId);
         User user1 = userRepository.getById(user.getUsername());
         User user2 = userRepository.getById(userId);
@@ -50,7 +56,8 @@ public class FollowService {
     }
 
     public HashMap<String,List<User>> getMyFollows() {
-        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        LOGGER.info("The user details are follow: {}", user.getUsername());
         User user1 = userRepository.getById(user.getUsername());
         return getStringListHashMap(user1);
     }
@@ -74,7 +81,8 @@ public class FollowService {
 
     //    function to remove a follow
     public String removeFollow(String userId) throws NullPointerException{
-        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         User user1 = userRepository.getById(user.getUsername());
         User user2 = userRepository.getById(userId);
         System.out.println("hello tester   --->>>" + userId);

@@ -79,7 +79,8 @@ public class UserService implements UserDetailsService {
     }
 
     public String deleteUser() {
-        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         boolean exists = userRepository.existsById(user.getUsername());
         if (!exists) {
             throw new IllegalStateException("No user present by this id: " + user.getUsername());
@@ -89,7 +90,7 @@ public class UserService implements UserDetailsService {
     }
 
     public String logout() {
-        UserDetails user = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         System.out.println("logged user"+user.getUsername());
         boolean exists = userRepository.existsById(user.getUsername());
         if (!exists) {
@@ -102,7 +103,8 @@ public class UserService implements UserDetailsService {
     @Transactional
     public String updateUser(User user) {
         System.out.println("jello");
-        UserDetails userReq = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userReq = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         System.out.println(userReq.getUsername());
         User userOptional = userRepository.findUserById(userReq.getUsername());
         System.out.println("hello");
